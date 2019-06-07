@@ -22,7 +22,8 @@ Gem::Specification.new do |spec|
   spec.executables   = ["prometheus_exporter"]
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.16"
+  spec.add_development_dependency "rubocop", ">= 0.69"
+  spec.add_development_dependency "bundler", "> 1.16"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "minitest", "~> 5.0"
   spec.add_development_dependency "guard", "~> 2.0"
@@ -31,5 +32,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "oj", "~> 3.0"
   spec.add_development_dependency "rack-test", "~> 0.8.3"
   spec.add_development_dependency "minitest-stub-const", "~> 0.6"
+  if !RUBY_ENGINE == 'jruby'
+    spec.add_development_dependency "raindrops", "~> 0.19"
+  end
   spec.required_ruby_version = '>= 2.3.0'
 end

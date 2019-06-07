@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require 'prometheus_exporter/client'
+require_relative '../instrumentation/unicorn'
+
 module PrometheusExporter::Server
-  class RunnerException < StandardError; end;
-  class WrongInheritance < RunnerException; end;
+  class RunnerException < StandardError; end
+  class WrongInheritance < RunnerException; end
 
   class Runner
     def initialize(options = {})
@@ -18,6 +21,15 @@ module PrometheusExporter::Server
 
       unless collector.is_a?(PrometheusExporter::Server::CollectorBase)
         raise WrongInheritance, 'Collector class must be inherited from PrometheusExporter::Server::CollectorBase'
+      end
+
+      if unicorn_listen_address && unicorn_pid_file
+        local_client = PrometheusExporter::LocalClient.new(collector: collector)
+        PrometheusExporter::Instrumentation::Unicorn.start(
+          pid_file: unicorn_pid_file,
+          listener_address: unicorn_listen_address,
+          client: local_client
+        )
       end
 
       server = server_class.new port: port, collector: collector, timeout: timeout, verbose: verbose
@@ -80,6 +92,8 @@ module PrometheusExporter::Server
     def server_class
       @server_class || PrometheusExporter::Server::WebServer
     end
+
+    attr_accessor :unicorn_listen_address, :unicorn_pid_file
 
     def collector
       @_collector ||= collector_class.new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "metric"
 require_relative "server/type_collector"
 require_relative "server/web_collector"
@@ -10,3 +12,4 @@ require_relative "server/web_server"
 require_relative "server/runner"
 require_relative "server/puma_collector"
 require_relative "server/hutch_collector"
+require_relative "server/unicorn_collector"

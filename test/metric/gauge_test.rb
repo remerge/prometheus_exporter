@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'prometheus_exporter/metric'
 
@@ -45,6 +47,8 @@ module PrometheusExporter::Metric
       TEXT
 
       assert_equal(gauge.to_prometheus_text, text)
+
+      Base.default_prefix = ''
     end
 
     it "can correctly set gauges with labels" do

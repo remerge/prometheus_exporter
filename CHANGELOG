@@ -1,12 +1,44 @@
-0.4.5 - 22-02-2019
+0.4.12 - 30-05-2019
 
+- Fix: unicorn collector reporting incorrect number of unicorn workers
+
+0.4.11 - 15-05-2019
+
+- Fix: Handle stopping nil worker_threads in Client
+- Dev: add frozen string literals
+
+0.4.10 - 29-04-2019
+
+- Fix: Custom label support for puma collector
+- Fix: Raindrops socket collector not working correctly
+
+0.4.9 - 11-04-2019
+
+- Fix: Gem was not working correctly in Ruby 2.4 and below due to a syntax error
+
+0.4.8 - 10-04-2019
+
+- Feature: added helpers for instrumenting unicorn using raindrops
+
+0.4.7 - 08-04-2019
+
+- Fix: collector was not escaping " \ and \n correctly. This could lead
+  to a corrupt payload in some cases.
+
+0.4.6 - 02-04-2019
+
+- Feature: Allow resetting a counter
 - Feature: Add sidekiq metrics: restarted, dead jobs counters
 - Fix: Client shutting down before sending metrics to collector
 
-0.4.4 - 14-02-2019
+0.4.5 - 14-02-2019
 
 - Feature: Allow process collector to ship custom labels for all process metrics
 - Fix: Always scope process metrics on hostname in collector
+
+0.4.4 - 13-02-2019
+
+- Feature: add support for local metric collection without using HTTP
 
 0.4.3 - 11-02-2019
 
