@@ -3,6 +3,8 @@
 # custom type collector for prometheus_exporter for handling the metrics sent from
 # PrometheusExporter::Instrumentation::Unicorn
 class PrometheusExporter::Server::UnicornCollector < PrometheusExporter::Server::TypeCollector
+  MAX_UNICORN_METRIC_AGE = 60
+
   UNICORN_GAUGES = {
     workers_total: 'Number of unicorn workers.',
     active_workers_total: 'Number of active unicorn workers',
@@ -23,11 +25,13 @@ class PrometheusExporter::Server::UnicornCollector < PrometheusExporter::Server:
     metrics = {}
 
     @unicorn_metrics.map do |m|
+      labels = m["custom_labels"] || {}
+
       UNICORN_GAUGES.map do |k, help|
         k = k.to_s
         if (v = m[k])
           g = metrics[k] ||= PrometheusExporter::Metric::Gauge.new("unicorn_#{k}", help)
-          g.observe(v)
+          g.observe(v, labels)
         end
       end
     end
@@ -36,6 +40,9 @@ class PrometheusExporter::Server::UnicornCollector < PrometheusExporter::Server:
   end
 
   def collect(obj)
+    now = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
+    obj["created_at"] = now
+    @unicorn_metrics.delete_if { |m| m['created_at'] + MAX_UNICORN_METRIC_AGE < now }
     @unicorn_metrics << obj
   end
 end
